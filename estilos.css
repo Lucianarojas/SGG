@@ -233,6 +233,8 @@ min-height:44px;
    BUTTONS AND LINKS
    ========================================================================== */
 .btn-cta {
+    background:#c8a96a;
+    color:#222222;
     width: 100%;
     padding: 1rem;
     background-color: var(--gold-accent);
