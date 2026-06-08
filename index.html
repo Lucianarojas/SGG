@@ -1,178 +1,175 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="SGG · Sistema de Gestión de Gastos. Inicia sesión o créate una cuenta." />
-  <title>SGG · Acceso</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<title>SGG · Sistema de Gestión de Gastos</title>
 
-  <link rel="stylesheet" href="estilos.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="estilos.css">
 </head>
+
 <body>
 
-  <div class="theme-bar" role="region" aria-label="Preferencia de tema visual">
-    <span class="theme-bar__logo" aria-hidden="true">◈ SGG</span>
+<div class="theme-bar">
+    <span class="theme-bar__logo">◈ SGG</span>
+
     <div class="theme-bar__toggle-wrap">
-      <span class="theme-bar__label" aria-hidden="true">☀</span>
-      <button id="themeToggle" class="theme-switch" role="switch" aria-checked="false" aria-label="Alternar modo claro y oscuro" title="Cambiar tema">
-        <span class="theme-switch__thumb" aria-hidden="true"></span>
-      </button>
-      <span class="theme-bar__label" aria-hidden="true">☾</span>
+
+        <span>☀</span>
+
+        <button
+            id="themeToggle"
+            class="theme-switch">
+
+            <span class="theme-switch__thumb"></span>
+
+        </button>
+
+        <span>☾</span>
+
     </div>
-  </div>
-
-  <div class="bg-overlay" aria-hidden="true">
-    <div class="deco deco--tl" aria-hidden="true"></div>
-    <div class="deco deco--br" aria-hidden="true"></div>
-  </div>
-
-  <main class="scene" id="mainScene">
-    <header class="brand" aria-label="SGG Sistema de Gestión de Gastos">
-      <div class="brand__ornament" aria-hidden="true">
-        <span class="ornament-line"></span>
-        <svg class="ornament-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true" focusable="false">
-          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.2"/>
-          <circle cx="20" cy="20" r="12" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3"/>
-          <path d="M20 8 L20 32 M8 20 L32 20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          <circle cx="20" cy="20" r="3.5" fill="currentColor"/>
-        </svg>
-        <span class="ornament-line"></span>
-      </div>
-      <h1 class="brand__name">SISTEMA DE GESTIÓN DE GASTOS</h1>
-    </header>
-
-    <div class="card" role="region" aria-label="Formulario de acceso al sistema">
-      <div id="globalMsg" class="msg-zone" role="alert" aria-live="assertive" aria-atomic="true"></div>
-<div id="welcomeBox" class="welcome-box" hidden>
-    <h2 id="welcomeTitle"></h2>
-
-    <p>
-        Has iniciado sesión correctamente.
-    </p>
-
-    <p>
-        Te recomendamos cambiar tu contraseña por una más segura.
-    </p>
-
-    <button type="button" id="btnLogout" class="btn-cta">
-        <span class="btn-cta__text">Cerrar sesión</span>
-    </button>
 </div>
 
-      <section id="panelLogin" class="panel" aria-labelledby="titleLogin">
-        <div class="panel__header">
-          <h2 id="titleLogin" class="panel__title">Bienvenido/a</h2>
-          <p class="panel__sub">Ingresa tus datos para continuar</p>
+<main class="scene">
+
+    <header class="brand">
+
+        <div class="brand__ornament">
+
+            <span class="ornament-line"></span>
+
+            <span>◈</span>
+
+            <span class="ornament-line"></span>
+
         </div>
 
-        <form id="formLogin" class="form" novalidate autocomplete="on">
-          <div class="field" id="wrapLoginEmail">
-            <label class="field__label" for="loginEmail">
-              Correo electrónico <abbr title="Campo obligatorio" aria-hidden="true">*</abbr>
-            </label>
-            <div class="field__row">
-              <span class="field__icon" aria-hidden="true">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="1.5" y="3.5" width="17" height="13" rx="2"/>
-                  <path d="M1.5 7l8.06 5.12a.9.9 0 0 0 .88 0L18.5 7"/>
-                </svg>
-              </span>
-              <input type="email" id="loginEmail" name="email" class="field__input" placeholder="correo@ejemplo.com" autocomplete="email" aria-required="true" aria-describedby="errLoginEmail" />
-            </div>
-            <span id="errLoginEmail" class="field__err" role="alert" aria-live="polite"></span>
-          </div>
+        <h1 class="brand__name">
+            SISTEMA DE GESTIÓN DE GASTOS
+        </h1>
 
-          <div class="field" id="wrapLoginPass">
-            <label class="field__label" for="loginPass">
-              Contraseña <abbr title="Campo obligatorio" aria-hidden="true">*</abbr>
-            </label>
-            <div class="field__row">
-              <span class="field__icon" aria-hidden="true">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="9" width="14" height="9" rx="2"/>
-                  <path d="M6.5 9V6.5a3.5 3.5 0 1 1 7 0V9"/>
-                  <circle cx="10" cy="13.5" r="1.2" fill="currentColor" stroke="none"/>
-                </svg>
-              </span>
-              <input type="password" id="loginPass" name="password" class="field__input" placeholder="••••••••" autocomplete="current-password" aria-required="true" aria-describedby="errLoginPass" />
-              <button type="button" class="field__eye" data-target="loginPass" aria-label="Mostrar contraseña">
-                <svg class="ico-eye" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M1 10s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z"/>
-                  <circle cx="10" cy="10" r="2.8"/>
-                </svg>
-                <svg class="ico-eye-off" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
-                  <path d="M3 3l14 14M8.5 8.6A2.8 2.8 0 0 0 12.5 12.4"/>
-                  <path d="M6.2 5.2C4 6.6 2 10 2 10s3.5 7 8 7a8.4 8.4 0 0 0 3.8-.9M10 3c4.5 0 8 7 8 7a13 13 0 0 1-2.2 3"/>
-                </svg>
-              </button>
-            </div>
-            <span id="errLoginPass" class="field__err" role="alert" aria-live="polite"></span>
-          </div>
+    </header>
 
-          <div class="form__aux">
-            <button type="button" id="btnForgot" class="link-btn" aria-haspopup="dialog">¿Olvidaste tu contraseña?</button>
-          </div>
+    <div class="card">
 
-          <button type="submit" id="btnLogin" class="btn-cta">
-            <span class="btn-cta__text">Iniciar sesión</span>
-            <span class="btn-cta__icon" aria-hidden="true">→</span>
-          </button>
-        </form>
-      </section>
+        <div id="globalMsg" class="msg-zone"></div>
 
-     
-    </div>
-  </main>
+        <div id="welcomeBox" class="welcome-box" hidden>
 
-  <div id="modalForgot" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalForgotTitle" aria-describedby="modalForgotDesc" hidden>
-    <div class="modal__backdrop" id="modalBackdrop" aria-hidden="true"></div>
-    <div class="modal__box">
-      <button class="modal__close" id="modalClose" aria-label="Cerrar ventana de recuperación">
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <line x1="5" y1="5" x2="15" y2="15"/>
-          <line x1="15" y1="5" x2="5" y2="15"/>
-        </svg>
-      </button>
+            <h2 id="welcomeTitle"></h2>
 
-      <div class="modal__icon" aria-hidden="true">
-        <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="22" cy="22" r="20"/>
-          <path d="M22 12v1M22 20v8M14 22a8 8 0 1 1 16 0"/>
-          <circle cx="22" cy="31" r="1.2" fill="currentColor" stroke="none"/>
-        </svg>
-      </div>
+            <p>
+                Has iniciado sesión correctamente.
+            </p>
 
-      <h2 id="modalForgotTitle" class="modal__title">Recuperar acceso</h2>
-      <p id="modalForgotDesc" class="modal__desc">
-        Ingresa tu correo electrónico registrado y te enviaremos las instrucciones para restablecer tu contraseña.
-      </p>
+            <p>
+                Bienvenido/a al Sistema de Gestión de Gastos.
+            </p>
 
-      <div class="field">
-        <label class="field__label" for="forgotEmail">Correo electrónico</label>
-        <div class="field__row">
-          <span class="field__icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="1.5" y="3.5" width="17" height="13" rx="2"/>
-              <path d="M1.5 7l8.06 5.12a.9.9 0 0 0 .88 0L18.5 7"/>
-            </svg>
-          </span>
-          <input type="email" id="forgotEmail" class="field__input" placeholder="correo@ejemplo.com" autocomplete="email" aria-describedby="forgotMsg" />
         </div>
-      </div>
 
-      <div id="forgotMsg" class="modal__msg" role="alert" aria-live="assertive" aria-atomic="true"></div>
+        <section id="panelLogin">
 
-      <button type="button" id="btnSendRecovery" class="btn-cta">
-        <span class="btn-cta__text">Enviar instrucciones</span>
-        <span class="btn-cta__icon" aria-hidden="true">→</span>
-      </button>
+            <div class="panel__header">
+
+                <h2 class="panel__title">
+                    Bienvenido/a
+                </h2>
+
+                <p class="panel__sub">
+                    Ingrese sus credenciales
+                </p>
+
+                <p class="panel__sub">
+                    Usuario 1:
+                    usuario1@gmail.com /
+                    Usuario.1
+                </p>
+
+                <p class="panel__sub">
+                    Usuario 2:
+                    usuario2@gmail.com /
+                    Usuario.2
+                </p>
+
+            </div>
+
+            <form id="formLogin">
+
+                <div class="field">
+
+                    <label class="field__label">
+                        Correo Electrónico
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        class="field__input"
+                        placeholder="correo@ejemplo.com">
+
+                    <span
+                        id="errLoginEmail"
+                        class="field__err">
+                    </span>
+
+                </div>
+
+                <div class="field">
+
+                    <label class="field__label">
+                        Contraseña
+                    </label>
+
+                    <div class="field__row">
+
+                        <input
+                            type="password"
+                            id="loginPass"
+                            class="field__input"
+                            placeholder="••••••••">
+
+                        <button
+                            type="button"
+                            class="field__eye"
+                            data-target="loginPass">
+
+                            👁
+
+                        </button>
+
+                    </div>
+
+                    <span
+                        id="errLoginPass"
+                        class="field__err">
+                    </span>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-cta">
+
+                    Iniciar sesión
+
+                </button>
+
+            </form>
+
+        </section>
+
     </div>
-  </div>
 
-  <script src="login.js"></script>
+</main>
+
+<script src="login.js"></script>
+
 </body>
 </html>
