@@ -2,9 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. CUENTAS REGISTRADAS POR DEFECTO
     const INITIAL_USERS = [
-        { email: "lu.rojas@gmail.com", password: "Luciana.2", name: "Luciana Rojas" },
-        { email: "rojas_r@gmail.com", password: "rojas2026", name: "R. Rojas" }
-    ];
+    {
+        email: "usuario1@gmail.com",
+        password: "Usuario.1",
+        name: "Usuario 1"
+    },
+    {
+        email: "usuario2@gmail.com",
+        password: "Usuario.2",
+        name: "Usuario 2"
+    }
+];
 
     // Sincronización limpia con LocalStorage
     if (!localStorage.getItem('sgg_users')) {
@@ -18,11 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Paneles (Vistas)
     const panelLogin = document.getElementById('panelLogin');
-    const panelRegister = document.getElementById('panelRegister');
-
+    
     // Formularios
     const formLogin = document.getElementById('formLogin');
-    const formRegister = document.getElementById('formRegister');
+
 
     // Modal
     const modalForgot = document.getElementById('modalForgot');
@@ -60,25 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         globalMsg.className = 'msg-zone';
     };
 
-    const togglePanels = (toRegister) => {
-        clearGlobalAlert();
-        resetFormErrors();
-        if (toRegister) {
-            panelLogin.classList.add('panel--off');
-            panelRegister.classList.remove('panel--off');
-            panelRegister.removeAttribute('aria-hidden');
-            formRegister.reset();
-            updateStrengthBar('');
-        } else {
-            panelRegister.classList.add('panel--off');
-            panelLogin.classList.remove('panel--off');
-            panelRegister.setAttribute('aria-hidden', 'true');
-            formLogin.reset();
-        }
-    };
-
-    document.getElementById('btnGoRegister').addEventListener('click', () => togglePanels(true));
-    document.getElementById('btnGoLogin').addEventListener('click', () => togglePanels(false));
 
     // Ocultar / Mostrar Contraseñas
     document.querySelectorAll('.field__eye').forEach(btn => {
@@ -130,7 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        showGlobalAlert(`¡Se inició sesión con éxito! Bienvenido, ${userFound.name}.`, 'success');
+        showGlobalAlert('', 'success');
+
+const welcomeBox = document.getElementById('welcomeBox');
+const welcomeTitle = document.getElementById('welcomeTitle');
+
+welcomeTitle.textContent = `¡Bienvenido ${userFound.name}!`;
+
+welcomeBox.hidden = false;
+
+formLogin.style.display = 'none';
     });
 
     // ==========================================================================
@@ -259,4 +256,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.field__input').forEach(i => i.style.borderColor = '');
         document.querySelectorAll('.field__err').forEach(e => e.textContent = '');
     }
+const btnLogout = document.getElementById('btnLogout');
+
+if(btnLogout){
+    btnLogout.addEventListener('click', () => {
+
+        document.getElementById('welcomeBox').hidden = true;
+
+        formLogin.style.display = 'block';
+
+        formLogin.reset();
+
+        clearGlobalAlert();
+
+    });
+}
 });

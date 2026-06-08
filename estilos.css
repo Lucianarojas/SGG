@@ -317,3 +317,25 @@ body {
 .modal__msg { font-size: 0.9rem; font-weight: 500; margin-top: 1rem; min-height: 1.2rem; }
 .modal__msg.error { color: var(--error); }
 .modal__msg.success { color: var(--success); }
+
+/* =======================================
+   BIENVENIDA
+======================================= */
+
+.welcome-box{
+    text-align:center;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid var(--success);
+    background:rgba(35,120,69,.1);
+    margin-bottom:20px;
+}
+
+.welcome-box h2{
+    color:var(--success);
+    margin-bottom:10px;
+}
+
+.welcome-box p{
+    margin:8px 0;
+}

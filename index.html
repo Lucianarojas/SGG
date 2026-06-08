@@ -47,6 +47,21 @@
 
     <div class="card" role="region" aria-label="Formulario de acceso al sistema">
       <div id="globalMsg" class="msg-zone" role="alert" aria-live="assertive" aria-atomic="true"></div>
+<div id="welcomeBox" class="welcome-box" hidden>
+    <h2 id="welcomeTitle"></h2>
+
+    <p>
+        Has iniciado sesión correctamente.
+    </p>
+
+    <p>
+        Te recomendamos cambiar tu contraseña por una más segura.
+    </p>
+
+    <button type="button" id="btnLogout" class="btn-cta">
+        <span class="btn-cta__text">Cerrar sesión</span>
+    </button>
+</div>
 
       <section id="panelLogin" class="panel" aria-labelledby="titleLogin">
         <div class="panel__header">
@@ -108,6 +123,8 @@
           </button>
         </form>
       </section>
+
+     
     </div>
   </main>
 
