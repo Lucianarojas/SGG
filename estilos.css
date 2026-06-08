@@ -188,6 +188,7 @@ body {
     align-items: center;
 }
 .field__input {
+min-height:44px;
     width: 100%;
     padding: 0.85rem 1rem 0.85rem 2.8rem;
     border: 1px solid var(--border-color);
@@ -202,6 +203,8 @@ body {
     outline-offset: 1px;
 }
 .field__eye {
+    min-width:44px;
+    min-height:44px;
     position: absolute;
     right: 1rem;
     background: none;
