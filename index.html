@@ -41,6 +41,16 @@
 
 <main class="scene">
 
+    <div id="successCloud" class="modal" hidden>
+        <div class="modal__backdrop"></div>
+        <div class="modal__box">
+            <div class="modal__icon">◈</div>
+            <h2 class="modal__title">¡Registro Exitoso!</h2>
+            <p class="modal__desc">Bienvenido/a, Te registraste correctamente.</p>
+            <button id="btnReturnToHome" class="btn-cta">Volver al Inicio</button>
+        </div>
+    </div>
+
     <header class="brand">
 
         <div class="brand__ornament">
@@ -115,12 +125,10 @@
                         type="email"
                         id="loginEmail"
                         class="field__input"
-                        placeholder="correo@ejemplo.com">
+                        placeholder="correo@ejemplo.com"
+                        required>
 
-                    <span
-                        id="errLoginEmail"
-                        class="field__err">
-                    </span>
+                    <span id="errLoginEmail" class="field__err"></span>
 
                 </div>
 
@@ -136,7 +144,8 @@
                             type="password"
                             id="loginPass"
                             class="field__input"
-                            placeholder="••••••••">
+                            placeholder="••••••••"
+                            required>
 
                         <button
                             type="button"
@@ -149,22 +158,91 @@
 
                     </div>
 
-                    <span
-                        id="errLoginPass"
-                        class="field__err">
-                    </span>
+                    <span id="errLoginPass" class="field__err"></span>
 
                 </div>
 
-                <button
-                    type="submit"
-                    class="btn-cta">
-
-                    Iniciar sesión
-
-                </button>
+                <button type="submit" class="btn-cta">Iniciar sesión</button>
 
             </form>
+
+            <p class="panel__footer">
+                ¿No tienes cuenta? <a href="#" id="linkToRegister">Regístrate aquí</a>
+            </p>
+
+        </section>
+
+        <section id="panelRegister" hidden>
+
+            <div class="panel__header">
+
+                <h2 class="panel__title">
+                    Crear Cuenta
+                </h2>
+
+                <p class="panel__sub">
+                    Todos los campos son obligatorios
+                </p>
+
+            </div>
+
+            <form id="formRegister" novalidate>
+
+                <div class="field">
+                    <label class="field__label">Nombre</label>
+                    <input type="text" id="regName" class="field__input" placeholder="Tu nombre" required>
+                    <span id="errRegName" class="field__err"></span>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">Apellido</label>
+                    <input type="text" id="regLastName" class="field__input" placeholder="Tu apellido" required>
+                    <span id="errRegLastName" class="field__err"></span>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">DNI</label>
+                    <input type="text" id="regDni" class="field__input" placeholder="Tu documento" required>
+                    <span id="errRegDni" class="field__err"></span>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="field__input" placeholder="correo@ejemplo.com" required>
+                    <span id="errRegEmail" class="field__err"></span>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">Contraseña</label>
+                    <div class="field__row">
+                        <input
+                            type="password"
+                            id="regPass"
+                            class="field__input"
+                            placeholder="••••••••"
+                            data-target="regPass"
+                            required>
+                        <button type="button" class="field__eye" data-target="regPass">👁</button>
+                    </div>
+                    
+                    <div class="strength">
+                        <div class="strength__track">
+                            <div id="strengthFill" class="strength__fill"></div>
+                        </div>
+                        <span id="strengthLabel" class="strength__label">Insegura</span>
+                    </div>
+                    <p class="field__hint">Debe contener: 8+ caracteres, una mayúscula, un número y un símbolo.</p>
+                    
+                    <span id="errRegPass" class="field__err"></span>
+                </div>
+
+                <button type="submit" class="btn-cta">Registrarse</button>
+
+            </form>
+
+            <p class="panel__footer">
+                ¿Ya tienes cuenta? <a href="#" id="linkToLogin">Inicia sesión</a>
+            </p>
 
         </section>
 
