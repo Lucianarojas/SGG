@@ -1,256 +1,73 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SGG · Sistema de Gestión de Gastos</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="estilos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso - Sistema Seguro</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilos.css">
 </head>
-
 <body>
-
-<div class="theme-bar">
-    <span class="theme-bar__logo">◈ SGG</span>
-
+    
+<header class="theme-bar">
+    <div class="theme-bar__logo">◈ SGG</div>
     <div class="theme-bar__toggle-wrap">
-
-        <span>☀</span>
-
-      <button
-    id="themeToggle"
-    class="theme-switch"
-    aria-label="Cambiar entre modo claro y oscuro"
-    title="Cambiar tema">
-
-            <span class="theme-switch__thumb"></span>
-
+        <button class="theme-switch" id="themeToggle" aria-label="Cambiar tema">
+            <span class="theme-switch__icon">☀</span>
+            <div class="theme-switch__thumb"></div>
+            <span class="theme-switch__icon">☾</span>
         </button>
-
-
-        <span>☾</span>
-
     </div>
-</div>
-
-<main class="scene">
-
-    <div id="successCloud" class="modal" hidden>
-        <div class="modal__backdrop"></div>
-        <div class="modal__box">
-            <div class="modal__icon">◈</div>
-            <h2 class="modal__title">¡Registro Exitoso!</h2>
-            <p class="modal__desc">Bienvenido/a, Te registraste correctamente.</p>
-            <button id="btnReturnToHome" class="btn-cta">Volver al Inicio</button>
-        </div>
-    </div>
-
-    <header class="brand">
-
-        <div class="brand__ornament">
-
-            <span class="ornament-line"></span>
-
-            <span>◈</span>
-
-            <span class="ornament-line"></span>
-
-        </div>
-
-        <h1 class="brand__name">
-            SISTEMA DE GESTIÓN DE GASTOS
-        </h1>
-
-    </header>
-
-    <div class="card">
-
-        <div id="globalMsg" class="msg-zone"></div>
-
-        <div id="welcomeBox" class="welcome-box" hidden>
-
-            <h2 id="welcomeTitle"></h2>
-
-            <p>
-                Has iniciado sesión correctamente.
-            </p>
-
-            <p>
-                Bienvenido/a al Sistema de Gestión de Gastos.
-            </p>
-
-        </div>
-
-        <section id="panelLogin">
-
-            <div class="panel__header">
-
-                <h2 class="panel__title">
-                    Bienvenido/a
-                </h2>
-
-                <p class="panel__sub">
-                    Ingrese sus credenciales
-                </p>
-
-                <p class="panel__sub">
-                    Usuario 1:
-                    usuario1@gmail.com /
-                    Usuario.1
-                </p>
-
-                <p class="panel__sub">
-                    Usuario 2:
-                    usuario2@gmail.com /
-                    Usuario.2
-                </p>
-
+</header>
+    <main class="scene">
+        <div class="brand">
+            <div class="brand__ornament">
+                <div class="ornament-line"></div>
+                <span>◈</span>
+                <div class="ornament-line"></div>
             </div>
+            <h1 class="brand__name">SISTEMA DE GESTIÓN DE GASTOS</h1>
+        </div>
 
-            <form id="formLogin">
-
-                <div class="field">
-
-                    <label class="field__label">
-                        Correo Electrónico
-                    </label>
-
-                    <input
-                        type="email"
-                        id="loginEmail"
-                        class="field__input"
-                        placeholder="correo@ejemplo.com"
-                        required>
-
-                    <span id="errLoginEmail" class="field__err"></span>
-
+        <div class="card">
+            <div id="panelLogin" class="panel">
+                <div class="panel__header">
+                    <h2 class="panel__title">Iniciar Sesión</h2>
+                    <p class="panel__sub">Ingresa tus credenciales de acceso</p>
                 </div>
+                
+                <div id="globalMsg" class="modal__msg error" style="display: none; margin-bottom: 15px; text-align: center;"></div>
 
-                <div class="field">
-
-                    <label class="field__label">
-                        Contraseña
-                    </label>
-
-                    <div class="field__row">
-
-                        <input
-                            type="password"
-                            id="loginPass"
-                            class="field__input"
-                            placeholder="••••••••"
-                            required>
-
-                        <button
-                            type="button"
-                            class="field__eye"
-                            data-target="loginPass">
-
-                            👁
-
-                        </button>
-
+                <form id="formLogin">
+                    <div class="field">
+                        <label class="field__label">Correo Electrónico</label>
+                        <input type="email" id="loginEmail" class="field__input" placeholder="correo@ejemplo.com" required>
                     </div>
-
-                    <span id="errLoginPass" class="field__err"></span>
-
-                </div>
-
-                <button type="submit" class="btn-cta">Iniciar sesión</button>
-
-            </form>
-
-            <p class="panel__footer">
-                ¿No tienes cuenta? <a href="#" id="linkToRegister">Regístrate aquí</a>
-            </p>
-
-        </section>
-
-        <section id="panelRegister" hidden>
-
-            <div class="panel__header">
-
-                <h2 class="panel__title">
-                    Crear Cuenta
-                </h2>
-
-                <p class="panel__sub">
-                    Todos los campos son obligatorios
-                </p>
-
-            </div>
-
-            <form id="formRegister" novalidate>
-
-                <div class="field">
-                    <label class="field__label">Nombre</label>
-                    <input type="text" id="regName" class="field__input" placeholder="Tu nombre" required>
-                    <span id="errRegName" class="field__err"></span>
-                </div>
-
-                <div class="field">
-                    <label class="field__label">Apellido</label>
-                    <input type="text" id="regLastName" class="field__input" placeholder="Tu apellido" required>
-                    <span id="errRegLastName" class="field__err"></span>
-                </div>
-
-                <div class="field">
-                    <label class="field__label">DNI</label>
-                    <input type="text" id="regDni" class="field__input" placeholder="Tu documento" required>
-                    <span id="errRegDni" class="field__err"></span>
-                </div>
-
-                <div class="field">
-                    <label class="field__label">Correo Electrónico</label>
-                    <input type="email" id="regEmail" class="field__input" placeholder="correo@ejemplo.com" required>
-                    <span id="errRegEmail" class="field__err"></span>
-                </div>
-
-                <div class="field">
-                    <label class="field__label">Contraseña</label>
-                    <div class="field__row">
-                        <input
-                            type="password"
-                            id="regPass"
-                            class="field__input"
-                            placeholder="••••••••"
-                            data-target="regPass"
-                            required>
-                        <button type="button" class="field__eye" data-target="regPass">👁</button>
-                    </div>
-                    
-                    <div class="strength">
-                        <div class="strength__track">
-                            <div id="strengthFill" class="strength__fill"></div>
+                    <div class="field">
+                        <label class="field__label">Contraseña</label>
+                        <div class="field__row">
+                            <input type="password" id="loginPass" class="field__input" placeholder="••••••••" required>
+                            <button type="button" class="field__eye" data-target="loginPass">
+                                <svg class="icon-svg" style="margin-right:0;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
                         </div>
-                        <span id="strengthLabel" class="strength__label">Insegura</span>
                     </div>
-                    <p class="field__hint">Debe contener: 8+ caracteres, una mayúscula, un número y un símbolo.</p>
-                    
-                    <span id="errRegPass" class="field__err"></span>
+                    <button type="submit" id="btnLogin" class="btn-cta">Iniciar Sesión</button>
+                </form>
+                <div class="panel__footer">
+                    <p>¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a></p>
+                    <p style="margin-top: 10px;"><a href="recuperar.html">¿Olvidaste tu contraseña?</a></p>
                 </div>
+            </div>
 
-                <button type="submit" class="btn-cta">Registrarse</button>
+            <div id="welcomeBox" class="welcome-box panel--off">
+                <h2 id="welcomeTitle"></h2>
+                <p>Has ingresado exitosamente al sistema.</p>
+                <button id="btnLogout" class="btn-cta" style="margin-top: 15px; background: var(--error);">Cerrar Sesión</button>
+            </div>
+        </div>
+    </main>
 
-            </form>
-
-            <p class="panel__footer">
-                ¿Ya tienes cuenta? <a href="#" id="linkToLogin">Inicia sesión</a>
-            </p>
-
-        </section>
-
-    </div>
-
-</main>
-
-<script src="login.js"></script>
-
+    <script src="login.js"></script>
 </body>
 </html>

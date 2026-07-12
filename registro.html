@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="estilos.css">
+    <title>Registro - Sistema Seguro</title>
+</head>
+<body>
+<header class="theme-bar">
+    <div class="theme-bar__logo">◈ SGG</div>
+    <div class="theme-bar__toggle-wrap">
+        <button class="theme-switch" id="themeToggle" aria-label="Cambiar tema">
+            <span class="theme-switch__icon">☀</span>
+            <div class="theme-switch__thumb"></div>
+            <span class="theme-switch__icon">☾</span>
+        </button>
+    </div>
+</header>
+<header class="brand">
+    <div class="brand__ornament">
+        <span class="ornament-line"></span>
+        <span>◈</span>
+        <span class="ornament-line"></span>
+    </div>
+    <h1 class="brand__name">SISTEMA DE GESTIÓN DE GASTOS</h1>
+</header>
+
+<main class="scene">
+    <div class="card">
+        <div class="panel">
+            <div class="panel__header">
+                <h2 class="panel__title">Crear cuenta</h2>
+                <p class="panel__sub">Todos los campos son obligatorios</p>
+            </div>
+            <div id="globalMsg" class="modal__msg error" style="display: none; margin-bottom: 15px; text-align: center;"></div>
+
+            <form id="formRegister">
+                <div class="field">
+                    <label class="field__label">Nombre/s</label>
+                    <input type="text" id="regName" class="field__input" placeholder="Juan" required>
+                </div>
+                <div class="field">
+                    <label class="field__label">Apellido/s</label>
+                    <input type="text" id="regLastName" class="field__input" placeholder="Pérez" required>
+                </div>
+                <div class="field">
+                    <label class="field__label">Fecha de Nacimiento</label>
+                    <input type="date" id="regDate" class="field__input" required>
+                </div>
+                <div class="field">
+                    <label class="field__label">Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="field__input" placeholder="juan@corporativo.com" required>
+                </div>
+                
+                <div class="field">
+                    <label class="field__label">Contraseña</label>
+                    <div class="field__row">
+                        <input type="password" id="regPass" class="field__input" placeholder="••••••••" required>
+                        <button type="button" class="field__eye" data-target="regPass">
+                            <svg class="icon-svg" style="margin-right:0;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <ul id="passwordFeedback" style="list-style:none; font-size: 0.85rem; margin-top: 10px; display:flex; flex-direction:column; gap:4px;">
+                        <li id="req1" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Mínimo 8 caracteres</li>
+                        <li id="req2" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Mayúscula</li>
+                        <li id="req3" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Minúscula</li>
+                        <li id="req4" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Número</li>
+                        <li id="req5" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Símbolo</li>
+                    </ul>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">Repetir Contraseña</label>
+                    <div class="field__row">
+                        <input type="password" id="regPassRepeat" class="field__input" placeholder="••••••••" required>
+                        <button type="button" class="field__eye" data-target="regPassRepeat">
+                            <svg class="icon-svg" style="margin-right:0;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnRegister" class="btn-cta" disabled>Registrarse</button>
+            </form>
+
+            <div class="panel__footer" style="margin-top: 20px;">
+                <p>¿Ya tienes cuenta? <a href="index.html">Inicia Sesión</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="registro.js"></script>
+</body>
+</html>

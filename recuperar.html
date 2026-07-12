@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="estilos.css">
+    <title>Recuperar Contraseña</title>
+</head>
+<body>
+<header class="theme-bar">
+    <div class="theme-bar__logo">◈ SGG</div>
+    <div class="theme-bar__toggle-wrap">
+        <button class="theme-switch" id="themeToggle" aria-label="Cambiar tema">
+            <span class="theme-switch__icon">☀</span>
+            <div class="theme-switch__thumb"></div>
+            <span class="theme-switch__icon">☾</span>
+        </button>
+    </div>
+</header>
+<header class="brand">
+    <div class="brand__ornament">
+        <span class="ornament-line"></span>
+        <span>◈</span>
+        <span class="ornament-line"></span>
+    </div>
+    <h1 class="brand__name">SISTEMA DE GESTIÓN DE GASTOS</h1>
+</header>
+<main class="scene">
+    <div class="card">
+        <div class="panel">
+            <div class="panel__header">
+                <h2 class="panel__title">Recuperar contraseña</h2>
+                <p class="panel__sub">Establece una nueva contraseña</p>
+            </div>
+            <div id="globalMsg" class="modal__msg error" style="display: none; margin-bottom: 15px; text-align: center;"></div>
+
+            <form id="formRecover">
+                <div class="field">
+                    <label class="field__label">Correo Electrónico</label>
+                    <input type="email" id="recEmail" class="field__input" placeholder="correo@ejemplo.com" required>
+                </div>
+                
+                <div class="field">
+                    <label class="field__label">Nueva Contraseña</label>
+                    <div class="field__row">
+                        <input type="password" id="recNewPass" class="field__input" placeholder="••••••••" required>
+                        <button type="button" class="field__eye" data-target="recNewPass">
+                            <svg class="icon-svg" style="margin-right:0;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                    <ul id="passwordFeedback" style="list-style:none; font-size: 0.85rem; margin-top: 10px; display:flex; flex-direction:column; gap:4px;">
+                        <li id="req1" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>Mínimo 8 caracteres</li>
+                        <li id="req2" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Mayúscula</li>
+                        <li id="req3" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Minúscula</li>
+                        <li id="req4" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Número</li>
+                        <li id="req5" class="err"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>1 Símbolo</li>
+                    </ul>
+                </div>
+
+                <div class="field">
+                    <label class="field__label">Repetir Nueva Contraseña</label>
+                    <div class="field__row">
+                        <input type="password" id="recRepeatPass" class="field__input" placeholder="••••••••" required>
+                        <button type="button" class="field__eye" data-target="recRepeatPass">
+                            <svg class="icon-svg" style="margin-right:0;" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" id="btnRecover" class="btn-cta" disabled>Actualizar Contraseña</button>
+            </form>
+
+            <div class="panel__footer" style="margin-top: 20px;">
+                <p><a href="index.html">Volver al Inicio de Sesión</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="recuperar.js"></script>
+</body>
+</html>
