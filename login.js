@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Inicializar base de datos con usuarios por defecto si no existen
+    // Inicializar usuarios por defecto
     if (!localStorage.getItem('usuarios_sgg')) {
         const defaultUsers = [
             { email: "usuario1@gmail.com", password: "Usuario.1", name: "Usuario 1" },
@@ -8,22 +8,25 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('usuarios_sgg', JSON.stringify(defaultUsers));
     }
 
-    // 2. Configuración de Persistencia de Tema (RF-02)
-    const htmlElement = document.documentElement;
-    const themeToggle = document.getElementById("themeToggle");
-    const savedTheme = localStorage.getItem("sgg_theme") || "light";
-    htmlElement.setAttribute("data-theme", savedTheme);
+// --- Persistencia de tema ---
+const htmlElement = document.documentElement;
+const themeToggle = document.getElementById("themeToggle");
+const savedTheme = localStorage.getItem("sgg_theme") || "light";
+htmlElement.setAttribute("data-theme", savedTheme);
+document.body.classList.add(savedTheme === "dark" ? "dark-mode" : "light-mode");
 
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const current = htmlElement.getAttribute("data-theme");
-            const next = current === "dark" ? "light" : "dark";
-            htmlElement.setAttribute("data-theme", next);
-            localStorage.setItem("sgg_theme", next);
-        });
-    }
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const current = htmlElement.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
+    htmlElement.setAttribute("data-theme", next);
+    document.body.classList.toggle("dark-mode", next === "dark");
+    document.body.classList.toggle("light-mode", next === "light");
+    localStorage.setItem("sgg_theme", next);
+  });
+}
 
-    // 3. Ver/Ocultar contraseña
+    // Ver/Ocultar contraseña
     document.querySelectorAll(".field__eye").forEach(btn => {
         btn.addEventListener("click", () => {
             const input = document.getElementById(btn.dataset.target);
@@ -33,11 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 4. Lógica de Login y Bloqueo Defensivo
+    // Lógica de Login
     const formLogin = document.getElementById("formLogin");
-    const panelLogin = document.getElementById("panelLogin");
-    const welcomeBox = document.getElementById("welcomeBox");
-    const welcomeTitle = document.getElementById("welcomeTitle");
     const btnLogin = document.getElementById("btnLogin");
     const globalMsg = document.getElementById("globalMsg");
 
@@ -46,9 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function showAlert(msg, type) {
         globalMsg.textContent = msg;
         globalMsg.style.display = "block";
-        if (type === "error") {
-            globalMsg.className = "modal__msg error";
-        }
+        globalMsg.className = "modal__msg " + type;
     }
 
     if (formLogin) {
@@ -58,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const password = document.getElementById("loginPass").value;
 
             const users = JSON.parse(localStorage.getItem('usuarios_sgg')) || [];
-          const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            const user = users.find(u => u.email.toLowerCase() === email);
 
             if (!user || user.password !== password) {
                 intentosFallidos++;
@@ -76,21 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Éxito
+            // Éxito en login
             intentosFallidos = 0;
             globalMsg.style.display = "none";
-            panelLogin.classList.add("panel--off");
-            welcomeTitle.textContent = `¡Bienvenido/a ${user.name}!`;
-            welcomeBox.classList.remove("panel--off");
-        });
-    }
 
-    const btnLogout = document.getElementById("btnLogout");
-    if (btnLogout) {
-        btnLogout.addEventListener("click", () => {
-            welcomeBox.classList.add("panel--off");
-            panelLogin.classList.remove("panel--off");
-            formLogin.reset();
+            // Guardar sesión del usuario actual
+            localStorage.setItem("usuarioActual", JSON.stringify(user));
+
+            // Redirigir al dashboard
+            window.location.href = "dashboard.html";
         });
     }
 });

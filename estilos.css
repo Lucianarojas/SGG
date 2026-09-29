@@ -383,3 +383,328 @@ min-height:44px;
 /* --- Agregados para estructura de navegación inferior --- */
 .panel__footer { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-secondary); }
 .panel__footer a { color: var(--gold-accent); font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+
+/* Panel Total estilo Mercado Pago */
+#panelTotal {
+  background: var(--card-bg);
+  border: 2px solid var(--gold-accent);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+#panelTotal h2 {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+#panelTotal p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--success);
+}
+
+/* Inputs estilo app financiera */
+.field__input {
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Botón estilo orig*/
+.btn-cta {
+  border-radius: 8px;
+  background: #bbbe71; 
+  font-weight: 700;
+}
+.btn-cta:hover {
+  background: #bbbe71;
+}
+
+/* ==============================
+   NAV DASHBOARD (Tabs internos)
+   ============================== */
+.nav-dashboard {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.nav-dashboard .btn-cta {
+  flex: 1;
+  max-width: 180px;
+  border-radius: 10px;
+  background: #bbbe71; 
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.nav-dashboard .btn-cta:hover {
+  background: #007bbd;
+}
+
+/* ==============================
+   PANEL TOTAL estilo saldo
+   ============================== */
+#panelTotalBox {
+  background: var(--card-bg);
+  border: 2px solid var(--gold-accent);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#panelTotalBox h2 {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+#panelTotalBox p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #bbbe71; /* Azul destacado */
+}
+
+/* ==============================
+   TABLA DE GASTOS estilo movimientos
+   ============================== */
+#tablaGastos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+#tablaGastos th, #tablaGastos td {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+}
+
+#tablaGastos th {
+  background: var(--bg-surface);
+  color: var(--gold-accent);
+  font-weight: 600;
+}
+
+#tablaGastos td {
+  color: var(--text-primary);
+}
+
+#tablaGastos td:nth-child(3) {
+  font-weight: 700;
+  color: #bbbe71; /* monto destacado */
+}
+
+/* Botones de acción */
+#tablaGastos button {
+  background: none;
+  border: none;
+  color: var(--gold-accent);
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+#tablaGastos button:hover {
+  color: #bbbe71;
+}
+/* NAV DASHBOARD */
+.nav-dashboard {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.nav-dashboard .btn-cta {
+  flex: 1;
+  max-width: 180px;
+  border-radius: 10px;
+  background: #bbbe71; /* Azul Mercado Pago */
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.nav-dashboard .btn-cta:hover {
+  background: #bbbe71;
+}
+
+/* PANEL TOTAL estilo saldo */
+#panelTotalBox {
+  background: var(--card-bg);
+  border: 2px solid var(--gold-accent);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#panelTotalBox h2 {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+#panelTotalBox p {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #009ee3; /* Azul destacado */
+}
+/* Modal de edición */
+#modalEditar {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#modalEditar[hidden] {
+  display: none;
+}
+
+#modalEditar .modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+#modalEditar .modal__box {
+  position: relative;
+  background: var(--card-bg, #fff);
+  padding: 20px;
+  border-radius: 8px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1001;
+}
+
+#modalEditar h2.modal__title {
+  margin-top: 0;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+#modalEditar form label {
+  display: block;
+  font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+#modalEditar form input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#modalEditar form button {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#btnCancelarEditar {
+  background: #ccc;
+  margin-right: 8px;
+}
+
+#btnConfirmarEditar {
+  background: var(--primary, #bbbe71);
+  color: #fff;
+}
+/* Contenedor de la tabla de gastos */
+#panelHistorial {
+  overflow-x: auto;   /* 👈 permite scroll horizontal si se pasa del ancho */
+  margin-top: 15px;
+}
+
+/* Tabla de gastos */
+#tablaGastos {
+  width: 100%;        /* 👈 ocupa todo el ancho disponible */
+  border-collapse: collapse;
+  table-layout: fixed; /* 👈 fuerza que las columnas se ajusten */
+}
+
+#tablaGastos th, #tablaGastos td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word; /* 👈 corta textos largos dentro de la celda */
+}
+
+/* Acciones (botones Editar/Eliminar) */
+#tablaGastos td:last-child {
+  white-space: nowrap; /* 👈 evita que los botones se rompan en varias líneas */
+}
+
+#tablaGastos button.link-btn {
+  background: none;
+  border: none;
+  color: var(--primary, #bbbe71);
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+#tablaGastos button.link-btn:hover {
+  text-decoration: underline;
+}
+/* La tarjeta se adapta al contenido */
+.card {
+  width: 100%;
+  max-width: 1000px;   /* 👈 límite en escritorio */
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Panel historial con tabla */
+#panelHistorial {
+  margin-top: 20px;
+}
+
+/* Tabla de gastos */
+#tablaGastos {
+  width: 100%;              /* ocupa todo el ancho de la tarjeta */
+  border-collapse: collapse;
+}
+
+#tablaGastos th, #tablaGastos td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Botones de acciones */
+#tablaGastos td:last-child {
+  white-space: nowrap;
+}
+
+/* Responsive: en pantallas chicas la tabla se vuelve scrollable */
+@media (max-width: 768px) {
+  #panelHistorial {
+    overflow-x: auto;       /* 👈 scroll horizontal si no entra */
+  }
+
+  #tablaGastos {
+    min-width: 600px;       /* 👈 asegura que las columnas no se aplasten demasiado */
+  }
+}
+
+.panel__title {
+  text-align: center;
+  font-family: var(--font-title);   /* igual que en index */
+  font-size: 2.5rem;                /* tamaño destacado */
+  font-weight: 700;
+  color: var(--gold-accent);        /* mismo color dorado */
+  margin: 20px 0;
+}
