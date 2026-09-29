@@ -41,16 +41,16 @@
     <section id="panelForm"> 
       <form id="formGasto">
         <div class="field">
-          <label class="field__label">Monto</label>
+          <label for="gastoMonto" class="field__label">Monto</label>
           <input type="number" id="gastoMonto" class="field__input" required>
            <div id="errMonto" class="field__err"></div>
         </div>
         <div class="field">
-          <label class="field__label">Fecha</label>
+          <label for="gastoFecha" class="field__label">Fecha</label>
           <input type="date" id="gastoFecha" class="field__input" required>
         </div>
         <div class="field">
-          <label class="field__label">Categoría</label>
+          <label for="gastoCategoria" class="field__label">Categoría</label>
           <select id="gastoCategoria" class="field__input" required>
             <option value="">Seleccione...</option>
             <option>Alimentación</option>
@@ -60,7 +60,7 @@
           </select>
         </div>
         <div class="field">
-          <label class="field__label">Descripción</label>
+          <label for="gastoDescripcion" class="field__label">Descripción</label>
           <input type="text" id="gastoDescripcion" class="field__input" required>
         </div>
         <button type="submit" class="btn-cta">Guardar Gasto</button>
