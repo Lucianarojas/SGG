@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  console.log("gastos.js cargado");
+  initDatabase();
+
   // 1. Verificar sesión
   const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
   if (!usuarioActual) {
@@ -121,6 +125,10 @@ totalBox.textContent = `$${total}`;
 console.log(nuevo);
   gastos.push(nuevo);
   setGastos(gastos);
+
+// NUEVO
+insertarMovimientoCompleto(nuevo);
+
   form.reset();
   renderGastos();
 });
