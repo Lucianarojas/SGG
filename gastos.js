@@ -64,6 +64,7 @@ if (themeToggle) {
       tr.innerHTML = `
         <td>${g.fecha}</td>
         <td>${g.categoria}</td>
+        <td>${g.tipo_movimiento || "egreso"}</td>
         <td>$${g.monto}</td>
         <td>${g.descripcion}</td>
         <td>
@@ -72,8 +73,13 @@ if (themeToggle) {
         </td>`;
       tablaBody.appendChild(tr);
     });
-    const total = gastos.reduce((sum, g) => sum + parseFloat(g.monto), 0);
-    totalBox.textContent = `$${total}`;
+
+    const total = gastos.reduce((sum, g) => {
+  return g.tipo_movimiento === "ingreso"
+    ? sum + parseFloat(g.monto)
+    : sum - parseFloat(g.monto);
+}, 0);
+totalBox.textContent = `$${total}`;
   }
 
   // 5. Crear gasto (formulario principal)
@@ -83,6 +89,9 @@ if (themeToggle) {
   const fecha = document.getElementById("gastoFecha").value;
   const categoria = document.getElementById("gastoCategoria").value;
   const descripcion = document.getElementById("gastoDescripcion").value.trim();
+  
+  const tipoMovimiento =
+  document.getElementById("tipoMovimiento").value;
 
   // limpiar errores previos
   document.getElementById("errMonto").textContent = "";
@@ -99,14 +108,17 @@ if (themeToggle) {
 
   const gastos = getGastos();
   const nuevo = {
-    id: Date.now(),
-    email_usuario: usuarioActual.email,
-    monto,
-    fecha,
-    categoria,
-    descripcion,
-    estado_activo: true
-  };
+  id: Date.now(),
+  email_usuario: usuarioActual.email,
+  monto,
+  fecha,
+  categoria,
+  descripcion,
+  tipo_movimiento: tipoMovimiento,
+  estado_activo: true
+};
+
+console.log(nuevo);
   gastos.push(nuevo);
   setGastos(gastos);
   form.reset();

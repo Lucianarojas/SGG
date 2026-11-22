@@ -60,9 +60,33 @@
           </select>
         </div>
         <div class="field">
+    <label for="tipoMovimiento" class="field__label">
+        Tipo de Movimiento
+    </label>
+
+    <select id="tipoMovimiento"
+            class="field__input"
+            required>
+        <option value="">Seleccione...</option>
+        <option value="ingreso">Ingreso</option>
+        <option value="egreso">Egreso</option>
+    </select>
+    </div>
+        <div class="field">
           <label for="gastoDescripcion" class="field__label">Descripción</label>
           <input type="text" id="gastoDescripcion" class="field__input" required>
         </div>
+        <div class="field">
+    <label for="comprobante" class="field__label">
+        Comprobante (opcional)
+    </label>
+
+    <input
+        type="file"
+        id="comprobante"
+        class="field__input"
+        accept="image/*">
+</div>
         <button type="submit" class="btn-cta">Guardar Gasto</button>
       </form>
     </section>
@@ -72,7 +96,7 @@
       <table id="tablaGastos" class="card">
         <thead>
           <tr>
-            <th>Fecha</th><th>Categoría</th><th>Monto</th><th>Descripción</th><th>Acciones</th>
+            <th>Fecha</th><th>Categoría</th><th>Tipo</th><th>Monto</th><th>Descripción</th><th>Acciones</th>
           </tr>
         </thead>
         <tbody></tbody>
