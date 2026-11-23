@@ -10,7 +10,7 @@ async function initDatabase() {
             `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
     });
 
-    db = new SQL.Database();
+    await cargarBaseDesdeOPFS(SQL);
 
     db.run(`
         CREATE TABLE IF NOT EXISTS movimientos (
@@ -77,6 +77,11 @@ function verMovimientos() {
 
 function insertarMovimientoCompleto(movimiento) {
 
+    console.log("INSERT SQLITE", movimiento);
+
+    console.log("DB:", db);
+
+
     db.run(`
         INSERT INTO movimientos
         (
@@ -98,6 +103,8 @@ function insertarMovimientoCompleto(movimiento) {
         movimiento.tipo_movimiento,
         movimiento.estado_activo ? 1 : 0
     ]);
+
+    //guardarBaseEnOPFS();
 
 }
 
@@ -123,4 +130,34 @@ function obtenerMovimientos() {
         url_comprobante: row[6],
         estado_activo: row[7]
     }));
+}
+
+function listarMovimientosSQLite() {
+
+    const resultado = db.exec(`
+        SELECT *
+        FROM movimientos
+    `);
+
+    console.log("RESULTADO SQL:", resultado);
+
+    if (resultado.length === 0) {
+        return [];
+    }
+
+    console.log("VALUES:", resultado[0].values);
+
+    return resultado[0].values;
+}
+
+
+function eliminarMovimientoSQLite(id) {
+
+    db.run(`
+        UPDATE movimientos
+        SET activo = 0
+        WHERE id = ?
+    `,[id]);
+
+    console.log("Movimiento desactivado:", id);
 }

@@ -122,12 +122,12 @@ totalBox.textContent = `$${total}`;
   estado_activo: true
 };
 
-console.log(nuevo);
+  console.log(nuevo);
   gastos.push(nuevo);
   setGastos(gastos);
 
 // NUEVO
-insertarMovimientoCompleto(nuevo);
+  insertarMovimientoCompleto(nuevo);
 
   form.reset();
   renderGastos();
@@ -167,6 +167,7 @@ insertarMovimientoCompleto(nuevo);
       const gastos = getGastos();
       const g = gastos.find(x => x.id === gastoAEliminar);
       if (g) g.estado_activo = false;
+      eliminarMovimientoSQLite(gastoAEliminar);
       setGastos(gastos);
       renderGastos();
     }
