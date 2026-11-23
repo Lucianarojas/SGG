@@ -65,51 +65,48 @@ document.addEventListener("DOMContentLoaded", () => {
     recRepeatPass.addEventListener("input", validateUX);
 
     if (form) {
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("recEmail").value.trim();
-            const newPass = recNewPass.value;
-            const repeatPass = recRepeatPass.value;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("recEmail").value.trim();
+    const newPass = recNewPass.value;
+    const repeatPass = recRepeatPass.value;
 
-            const users = JSON.parse(localStorage.getItem('usuarios_sgg')) || [];
-            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    await initDatabase();
+    const user = obtenerUsuarioPorEmail(email);
 
-            if (!user) {
-              showAlert("El correo electrónico no se encuentra registrado.", "error");
-                return;
-            }
-
-          if (newPass !== repeatPass) {
-                showAlert("Las contraseñas no coinciden.", "error");
-                return;
-            }
-
-            if (user.password === newPass) {
-                showAlert("Seguridad: La nueva contraseña no puede ser igual a tu contraseña actual.", "error");
-                return;
-            }
-
-            // Validación de requisitos de seguridad
-            const requisitos = [
-                newPass.length >= 8,
-                /[A-Z]/.test(newPass),
-                /[a-z]/.test(newPass),
-                /[0-9]/.test(newPass),
-                /[^A-Za-z0-9]/.test(newPass)
-            ];
-            if (!requisitos.every(r => r)) {
-                showAlert("La contraseña no cumple con los requisitos de seguridad.", "error");
-                return;
-            }
-
-            // Actualización exitosa
-            user.password = newPass;
-            localStorage.setItem('usuarios_sgg', JSON.stringify(users));
-            
-            showAlert("Contraseña modificada correctamente.", "success");
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 2000);
-        });
+    if (!user) {
+      showAlert("El correo electrónico no se encuentra registrado.", "error");
+      return;
     }
+
+    if (newPass !== repeatPass) {
+      showAlert("Las contraseñas no coinciden.", "error");
+      return;
+    }
+
+    if (user.password === newPass) {
+      showAlert("Seguridad: La nueva contraseña no puede ser igual a tu contraseña actual.", "error");
+      return;
+    }
+
+    const requisitos = [
+      newPass.length >= 8,
+      /[A-Z]/.test(newPass),
+      /[a-z]/.test(newPass),
+      /[0-9]/.test(newPass),
+      /[^A-Za-z0-9]/.test(newPass)
+    ];
+    if (!requisitos.every(r => r)) {
+      showAlert("La contraseña no cumple con los requisitos de seguridad.", "error");
+      return;
+    }
+
+    await actualizarPasswordUsuarioSQLite(email, newPass);
+
+    showAlert("Contraseña modificada correctamente.", "success");
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 2000);
+  });
+}
 });

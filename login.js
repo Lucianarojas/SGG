@@ -1,13 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Inicializar usuarios por defecto
-    if (!localStorage.getItem('usuarios_sgg')) {
-        const defaultUsers = [
-            { email: "usuario1@gmail.com", password: "Usuario.1", name: "Usuario 1" },
-            { email: "usuario2@gmail.com", password: "Usuario.2", name: "Usuario 2" }
-        ];
-        localStorage.setItem('usuarios_sgg', JSON.stringify(defaultUsers));
-    }
-
+   
     // --- Persistencia de tema ---
     const htmlElement = document.documentElement;
     const themeToggle = document.getElementById("themeToggle");
@@ -49,47 +41,50 @@ document.addEventListener("DOMContentLoaded", () => {
         globalMsg.className = "modal__msg " + type;
     }
 
-    if (formLogin) {
-        formLogin.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-            const password = document.getElementById("loginPass").value;
+   if (formLogin) {
+  formLogin.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPass").value;
 
-            const users = JSON.parse(localStorage.getItem('usuarios_sgg')) || [];
-            const user = users.find(u => u.email.toLowerCase() === email);
+    btnLogin.disabled = true;
+    btnLogin.textContent = "Sincronizando...";
 
-            if (!user || user.password !== password) {
-                intentosFallidos++;
-                if (intentosFallidos >= 3) {
-                    showAlert("Demasiados intentos. Sistema bloqueado por 30 segundos.", "error");
-                    btnLogin.disabled = true;
-                    setTimeout(() => {
-                        intentosFallidos = 0;
-                        btnLogin.disabled = false;
-                        globalMsg.style.display = "none";
-                    }, 30000);
-                } else {
-                    showAlert(`Credenciales incorrectas. Intento ${intentosFallidos}/3`, "error");
-                }
-                return;
-            }
-
-            // Éxito en login
-            intentosFallidos = 0;
-            globalMsg.style.display = "none";
-            btnLogin.disabled = true;
-            btnLogin.textContent = "Sincronizando...";
-
-            // Guardar sesión del usuario actual
-            localStorage.setItem("usuarioActual", JSON.stringify(user));
-
-            // Descargar respaldo SQLite desde Supabase antes de abrir el dashboard
-            if (typeof descargarBaseDesdeNube === "function") {
-                await descargarBaseDesdeNube(email);
-            }
-
-            // Redirigir al dashboard
-            window.location.href = "dashboard.html";
-        });
+    if (typeof descargarBaseDesdeNube === "function") {
+      await descargarBaseDesdeNube(email);
     }
+    await initDatabase();
+
+    const user = obtenerUsuarioPorEmail(email);
+
+    if (!user || user.password !== password) {
+      btnLogin.disabled = false;
+      btnLogin.textContent = "Iniciar sesión";
+      intentosFallidos++;
+      if (intentosFallidos >= 3) {
+        showAlert("Demasiados intentos. Sistema bloqueado por 30 segundos.", "error");
+        btnLogin.disabled = true;
+        setTimeout(() => {
+          intentosFallidos = 0;
+          btnLogin.disabled = false;
+          btnLogin.textContent = "Iniciar sesión";
+          globalMsg.style.display = "none";
+        }, 30000);
+      } else {
+        showAlert(`Credenciales incorrectas. Intento ${intentosFallidos}/3`, "error");
+      }
+      return;
+    }
+
+    // Éxito en login
+    intentosFallidos = 0;
+    globalMsg.style.display = "none";
+    localStorage.setItem("usuarioActual", JSON.stringify({
+      email: user.email,
+      name: user.name
+    }));
+
+    window.location.href = "dashboard.html";
+  });
+}
 });

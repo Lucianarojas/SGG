@@ -72,57 +72,52 @@ function validatePassword() {
     regPass.addEventListener("input", validatePassword);
     regPassRepeat.addEventListener("input", validatePassword);
 
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        const name = document.getElementById("regName").value.trim();
-        const lastName = document.getElementById("regLastName").value.trim();
-        const email = document.getElementById("regEmail").value.trim();
-        const birthDateVal = regDate.value;
+    form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        // Validar Nombre y Apellido (Sin números ni especiales)
-        const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-        if (!nameRegex.test(name) || !nameRegex.test(lastName)) {
-            showAlert("El Nombre y Apellido no deben contener números ni caracteres especiales.", "error");
-            return;
-        }
+  const name = document.getElementById("regName").value.trim();
+  const lastName = document.getElementById("regLastName").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const birthDateVal = regDate.value;
 
-        // Validación Edad Crítica (Mínimo 14 años)
-        const birthDate = new Date(birthDateVal);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+  if (!nameRegex.test(name) || !nameRegex.test(lastName)) {
+    showAlert("El Nombre y Apellido no deben contener números ni caracteres especiales.", "error");
+    return;
+  }
 
-        if (age < 14) {
-          showAlert("Registro rechazado: Debes ser mayor de 14 años.", "error");
-            return;
-        }
+  const birthDate = new Date(birthDateVal);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
 
-        // Formato estricto corporativo de email (RegEx)
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailRegex.test(email)) {
-           showAlert("Por favor, introduce un correo electrónico válido corporativo sin espacios.", "error");
-            return;
-        }
+  if (age < 14) {
+    showAlert("Registro rechazado: Debes ser mayor de 14 años.", "error");
+    return;
+  }
 
-        const users = JSON.parse(localStorage.getItem('usuarios_sgg')) || [];
-        
-        if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-            showAlert("Este correo electrónico ya se encuentra registrado.", "error");
-            return;
-        }
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (!emailRegex.test(email)) {
+    showAlert("Por favor, introduce un correo electrónico válido corporativo sin espacios.", "error");
+    return;
+  }
 
-        users.push({
-            email: email,
-            password: regPass.value,
-            name: `${name} ${lastName}`
-        });
+  await initDatabase();
+  const resultado = await registrarUsuarioSQLite({
+    email,
+    password: regPass.value,
+    name: `${name} ${lastName}`
+  });
 
-        localStorage.setItem('usuarios_sgg', JSON.stringify(users));
-        alert("¡Registro Exitoso! Redirigiendo al inicio...");
-        window.location.href = "index.html";
-    });
+  if (!resultado.ok) {
+    showAlert(resultado.error, "error");
+    return;
+  }
+
+  alert("¡Registro Exitoso! Redirigiendo al inicio...");
+  window.location.href = "index.html";
+});
 });

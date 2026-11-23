@@ -24,9 +24,74 @@ async function initDatabase() {
     );
   `);
 
+  initTablaUsuarios();
+
   await guardarBaseEnOPFS();
   console.log("SQLite inicializado y persistido en OPFS");
   return db;
+}
+
+function initTablaUsuarios() {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS usuarios (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      name TEXT NOT NULL
+    );
+  `);
+
+  const defaults = [
+    { email: "usuario1@gmail.com", password: "Usuario.1", name: "Usuario 1" },
+    { email: "usuario2@gmail.com", password: "Usuario.2", name: "Usuario 2" }
+  ];
+
+  defaults.forEach(u => {
+    db.run(`
+      INSERT OR IGNORE INTO usuarios (email, password, name)
+      VALUES (?, ?, ?);
+    `, [u.email.toLowerCase(), u.password, u.name]);
+  });
+}
+
+function obtenerUsuarioPorEmail(email) {
+  const res = db.exec(`
+    SELECT id, email, password, name
+    FROM usuarios
+    WHERE LOWER(email) = LOWER(?)
+    LIMIT 1;
+  `, [email.trim()]);
+
+  if (!res.length || !res[0].values.length) return null;
+
+  const [id, mail, password, name] = res[0].values[0];
+  return { id, email: mail, password, name };
+}
+
+async function registrarUsuarioSQLite({ email, password, name }) {
+  const emailNormalizado = email.trim().toLowerCase();
+  if (obtenerUsuarioPorEmail(emailNormalizado)) {
+    return { ok: false, error: "Este correo electrónico ya se encuentra registrado." };
+  }
+
+  db.run(`
+    INSERT INTO usuarios (email, password, name)
+    VALUES (?, ?, ?);
+  `, [emailNormalizado, password, name.trim()]);
+
+  await guardarBaseEnOPFS();
+  return { ok: true };
+}
+
+async function actualizarPasswordUsuarioSQLite(email, nuevaPassword) {
+  const emailNormalizado = email.trim().toLowerCase();
+  db.run(`
+    UPDATE usuarios
+    SET password = ?
+    WHERE LOWER(email) = LOWER(?);
+  `, [nuevaPassword, emailNormalizado]);
+
+  await guardarBaseEnOPFS();
 }
 
 async function insertarMovimientoCompleto(movimiento) {
