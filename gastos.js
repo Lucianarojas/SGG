@@ -1,16 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
+let usuarioActual = null;
+let graficoBalance = null;
+let graficoCategorias = null;
 
-  console.log("gastos.js cargado");
-  initDatabase();
-
+document.addEventListener("DOMContentLoaded", async () => {
   // 1. Verificar sesión
-  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+  usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
   if (!usuarioActual) {
     window.location.href = "index.html";
     return;
   }
 
-  // 2. Referencias DOM
+  // 2. Inicializar SQLite + OPFS antes de tocar la UI
+  await initDatabase();
+
+  // 3. Referencias DOM
   const form = document.getElementById("formGasto");
   const tablaBody = document.querySelector("#tablaGastos tbody");
   const totalBox = document.getElementById("totalGastado");
@@ -22,135 +25,125 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCancelarEditar = document.getElementById("btnCancelarEditar");
   let gastoAEliminar = null;
   let gastoEditando = null;
- // --- Persistencia de tema desde login ---
+
+  // --- Persistencia de tema ---
   const htmlElement = document.documentElement;
   const themeToggle = document.getElementById("themeToggle");
   const savedTheme = localStorage.getItem("sgg_theme") || "light";
+  htmlElement.setAttribute("data-theme", savedTheme);
+  document.body.classList.remove("dark-mode", "light-mode");
+  document.body.classList.add(savedTheme === "dark" ? "dark-mode" : "light-mode");
 
-// Aplicar el tema guardado al cargar
-htmlElement.setAttribute("data-theme", savedTheme);
-document.body.classList.remove("dark-mode", "light-mode"); // limpiar
-document.body.classList.add(savedTheme === "dark" ? "dark-mode" : "light-mode");
-
-// --- Toggle Día/Noche ---
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const currentTheme = htmlElement.getAttribute("data-theme");
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
-
-    // Cambiar atributo
-    htmlElement.setAttribute("data-theme", nextTheme);
-
-    // 👇 limpiar antes de aplicar
-    document.body.classList.remove("dark-mode", "light-mode");
-    document.body.classList.add(nextTheme === "dark" ? "dark-mode" : "light-mode");
-
-    // Guardar preferencia
-    localStorage.setItem("sgg_theme", nextTheme);
-  });
-}
-
-
-  // 3. Funciones de LocalStorage
-  function getGastos() {
-    return JSON.parse(localStorage.getItem("gastos_sgg")) || [];
-  }
-  function setGastos(arr) {
-    localStorage.setItem("gastos_sgg", JSON.stringify(arr));
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = htmlElement.getAttribute("data-theme");
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      htmlElement.setAttribute("data-theme", nextTheme);
+      document.body.classList.remove("dark-mode", "light-mode");
+      document.body.classList.add(nextTheme === "dark" ? "dark-mode" : "light-mode");
+      localStorage.setItem("sgg_theme", nextTheme);
+    });
   }
 
-  // 4. Renderizar gastos
+  // 4. Renderizar movimientos desde SQLite
   function renderGastos() {
-    const gastos = getGastos().filter(g => g.email_usuario === usuarioActual.email && g.estado_activo);
+    const movimientos = obtenerMovimientos(usuarioActual.email);
     tablaBody.innerHTML = "";
-    gastos.forEach(g => {
+
+    movimientos.forEach(g => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${g.fecha}</td>
         <td>${g.categoria}</td>
-        <td>${g.tipo_movimiento || "egreso"}</td>
+        <td>${g.tipo_movimiento}</td>
         <td>$${g.monto}</td>
         <td>${g.descripcion}</td>
         <td>
+          ${g.url_comprobante ? `<a href="${g.url_comprobante}" target="_blank">Ver</a>` : "-"}
           <button class="link-btn" data-id="${g.id}" data-action="edit">Editar</button>
           <button class="link-btn" data-id="${g.id}" data-action="delete">Eliminar</button>
         </td>`;
       tablaBody.appendChild(tr);
     });
 
-    const total = gastos.reduce((sum, g) => {
-  return g.tipo_movimiento === "ingreso"
-    ? sum + parseFloat(g.monto)
-    : sum - parseFloat(g.monto);
-}, 0);
-totalBox.textContent = `$${total}`;
+    // Balance calculado desde la consulta SQL de agregación
+    const totales = obtenerTotalesPorTipoSQL(usuarioActual.email);
+    const balance = totales.ingreso - totales.egreso;
+    totalBox.textContent = `$${balance}`;
   }
 
-  // 5. Crear gasto (formulario principal)
-  form.addEventListener("submit", e => {
-  e.preventDefault();
-  const monto = parseFloat(document.getElementById("gastoMonto").value);
-  const fecha = document.getElementById("gastoFecha").value;
-  const categoria = document.getElementById("gastoCategoria").value;
-  const descripcion = document.getElementById("gastoDescripcion").value.trim();
-  
-  const tipoMovimiento =
-  document.getElementById("tipoMovimiento").value;
-
-  // limpiar errores previos
-  document.getElementById("errMonto").textContent = "";
-
-  if (!monto || monto <= 0) {
-    document.getElementById("errMonto").textContent = "El monto debe ser mayor a 0.";
-    return;
-  }
-  if (!fecha || !categoria || !descripcion) {
-    // Podés agregar otros err debajo de cada campo si querés
-    alert("Todos los campos son obligatorios.");
-    return;
+  function actualizarTodo() {
+    renderGastos();
+    crearGraficoBalance();
+    crearGraficoCategorias();
   }
 
-  const gastos = getGastos();
-  const nuevo = {
-  id: Date.now(),
-  email_usuario: usuarioActual.email,
-  monto,
-  fecha,
-  categoria,
-  descripcion,
-  tipo_movimiento: tipoMovimiento,
-  estado_activo: true
-};
+  // 5. Crear movimiento
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const monto = parseFloat(document.getElementById("gastoMonto").value);
+    const fecha = document.getElementById("gastoFecha").value;
+    const categoria = document.getElementById("gastoCategoria").value;
+    const descripcion = document.getElementById("gastoDescripcion").value.trim();
+    const tipoMovimiento = document.getElementById("tipoMovimiento").value;
 
-  console.log(nuevo);
-  gastos.push(nuevo);
-  setGastos(gastos);
+    document.getElementById("errMonto").textContent = "";
 
-// NUEVO
-  insertarMovimientoCompleto(nuevo);
+    if (!monto || monto <= 0) {
+      document.getElementById("errMonto").textContent = "El monto debe ser mayor a 0.";
+      return;
+    }
+    if (!fecha || !categoria || !descripcion || !tipoMovimiento) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
 
-  form.reset();
-  renderGastos();
+   const btnSubmit = form.querySelector('button[type="submit"]');
+    const inputComprobante = document.getElementById("comprobante");
+    const archivo = inputComprobante.files[0];
 
-  crearGraficoBalance();
-  crearGraficoCategorias();
-});
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = archivo ? "Subiendo comprobante..." : "Guardando...";
 
-  // 6. Botones Editar / Eliminar
+    let urlComprobante = null;
+    if (archivo) {
+      urlComprobante = await subirComprobante(archivo);
+    }
+
+    const nuevo = {
+      id: Date.now(),
+      email_usuario: usuarioActual.email,
+      monto,
+      fecha,
+      categoria,
+      descripcion,
+      tipo_movimiento: tipoMovimiento,
+      url_comprobante: urlComprobante
+    };
+
+    await insertarMovimientoCompleto(nuevo);
+
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = "Guardar Gasto";
+
+    form.reset();
+    actualizarTodo();
+  });
+
+  // 6. Acciones de tabla (Editar / Eliminar)
   tablaBody.addEventListener("click", e => {
     const btn = e.target.closest("button");
     if (!btn) return;
     const id = parseInt(btn.dataset.id);
-    const gastos = getGastos();
-    const g = gastos.find(x => x.id === id);
+    const movimientos = obtenerMovimientos(usuarioActual.email);
+    const g = movimientos.find(x => x.id === id);
 
     if (btn.dataset.action === "delete") {
       gastoAEliminar = id;
       modalEliminar.hidden = false;
     }
-
-    if (btn.dataset.action === "edit" && g) {
-      // Cargar datos en el modal de edición
+    
+     if (btn.dataset.action === "edit" && g) {
       document.getElementById("editMonto").value = g.monto;
       document.getElementById("editFecha").value = g.fecha;
       document.getElementById("editCategoria").value = g.categoria;
@@ -160,22 +153,16 @@ totalBox.textContent = `$${total}`;
     }
   });
 
-  // 7. Confirmar eliminación
+  // 7. Confirmar borrado lógico
   btnCancelarEliminar.addEventListener("click", () => {
     modalEliminar.hidden = true;
     gastoAEliminar = null;
   });
-  btnConfirmarEliminar.addEventListener("click", () => {
-    if (gastoAEliminar) {
-      const gastos = getGastos();
-      const g = gastos.find(x => x.id === gastoAEliminar);
-      if (g) g.estado_activo = false;
-      eliminarMovimientoSQLite(gastoAEliminar);
-      setGastos(gastos);
-      renderGastos();
-      crearGraficoBalance();
-      crearGraficoCategorias();
 
+  btnConfirmarEliminar.addEventListener("click", async () => {
+    if (gastoAEliminar) {
+      await eliminarMovimientoSQLite(gastoAEliminar);
+      actualizarTodo();
     }
     modalEliminar.hidden = true;
     gastoAEliminar = null;
@@ -186,23 +173,24 @@ totalBox.textContent = `$${total}`;
     modalEditar.hidden = true;
     gastoEditando = null;
   });
-  formEditar.addEventListener("submit", e => {
+
+  formEditar.addEventListener("submit", async e => {
     e.preventDefault();
-    const gastos = getGastos();
-    const g = gastos.find(x => x.id === gastoEditando);
-    if (g) {
-      g.monto = parseFloat(document.getElementById("editMonto").value);
-      g.fecha = document.getElementById("editFecha").value;
-      g.categoria = document.getElementById("editCategoria").value;
-      g.descripcion = document.getElementById("editDescripcion").value.trim();
-      setGastos(gastos);
-      renderGastos();
+    if (gastoEditando) {
+      await editarMovimientoSQLite({
+        id: gastoEditando,
+        monto: parseFloat(document.getElementById("editMonto").value),
+        fecha: document.getElementById("editFecha").value,
+        categoria: document.getElementById("editCategoria").value,
+        descripcion: document.getElementById("editDescripcion").value.trim()
+      });
+      actualizarTodo();
     }
     modalEditar.hidden = true;
     gastoEditando = null;
   });
 
-  // 9. Navegación interna (tabs)
+  // 9. Navegación interna
   const navButtons = document.querySelectorAll(".nav-dashboard button");
   const sections = document.querySelectorAll("main .card section");
   navButtons.forEach(btn => {
@@ -213,108 +201,79 @@ totalBox.textContent = `$${total}`;
     });
   });
 
-  // Inicializar
-  renderGastos();
+  // Logout
+  const btnLogout = document.getElementById("btnLogout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      localStorage.removeItem("usuarioActual");
+      window.location.href = "index.html";
+    });
+  }
 
-  crearGraficoBalance();
-  crearGraficoCategorias();
+  actualizarTodo();
 });
 
-
-// Botón de logout en dashboard
-const btnLogout = document.getElementById("btnLogout");
-if (btnLogout) {
-  btnLogout.addEventListener("click", () => {
-    localStorage.removeItem("usuarioActual");
-    window.location.href = "index.html";
-  });
-}
- 
-let graficoBalance = null;
-let graficoCategorias = null;
-
 function crearGraficoBalance() {
+  const totales = obtenerTotalesPorTipoSQL(usuarioActual.email);
+  const ctx = document.getElementById("graficoBalance");
 
- const gastos =
-(JSON.parse(localStorage.getItem("gastos_sgg")) || [])
-.filter(g => g.estado_activo);
-  let ingresos = 0;
-  let egresos = 0;
+  if (graficoBalance) graficoBalance.destroy();
 
-  gastos.forEach(g => {
-
-    if (g.tipo_movimiento === "ingreso") {
-      ingresos += Number(g.monto);
-    } else {
-      egresos += Number(g.monto);
+  graficoBalance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Ingresos", "Egresos"],
+      datasets: [{
+        label: "Total ($)",
+        data: [totales.ingreso, totales.egreso],
+        backgroundColor: ["#2ecc71", "#e74c3c"]
+      }]
     }
-
-  });
-
-  const ctx =
-document.getElementById("graficoBalance");
-
-if (graficoBalance) {
-    graficoBalance.destroy();
-}
-
-graficoBalance = new Chart(ctx, {
-      type: "bar",
-      data: {
-          labels: ["Ingresos", "Egresos"],
-          datasets: [{
-              label: "Total",
-              data: [ingresos, egresos]
-          }]
-      }
   });
 }
 
 function crearGraficoCategorias() {
+  const resultado = obtenerEgresosPorCategoriaSQL(usuarioActual.email);
+  const ctx = document.getElementById("graficoCategorias");
 
-  const gastos =
-(JSON.parse(localStorage.getItem("gastos_sgg")) || [])
-.filter(
-        g =>
-        g.estado_activo &&
-        g.tipo_movimiento === "egreso"
-      );
+  if (graficoCategorias) graficoCategorias.destroy();
 
-  const categorias = {};
-  
-  gastos.forEach(g => {
-
-    if (!categorias[g.categoria]) {
-      categorias[g.categoria] = 0;
+  graficoCategorias = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: resultado.labels,
+      datasets: [{
+        data: resultado.data
+      }]
     }
-
-    categorias[g.categoria] +=
-      Number(g.monto);
-
   });
-
-  const ctx =
-document.getElementById("graficoCategorias");
-
-if (graficoCategorias) {
-    graficoCategorias.destroy();
 }
 
-graficoCategorias = new Chart(ctx, {
+async function subirComprobante(archivo) {
+  const API_KEY = "50aec7e51f2c4ef1128e7dc8fd997430";
+  const formData = new FormData();
+  formData.append("image", archivo);
 
-      type: "doughnut",
+  try {
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
+      method: "POST",
+      body: formData
+    });
 
-      data: {
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
 
-          labels:
-            Object.keys(categorias),
+    const resultado = await response.json();
 
-          datasets: [{
-
-              data:
-                Object.values(categorias)
-
-          }]
-      }
-  });
+    if (resultado.success && resultado.data && resultado.data.url) {
+      return resultado.data.url;
+    } else {
+      throw new Error("Respuesta inválida de la API de imágenes.");
+    }
+  } catch (error) {
+    console.error("Error subiendo comprobante:", error);
+    alert("No se pudo subir el comprobante (falla de red o API). El movimiento se registrará sin imagen.");
+    return null;
+  }
 }
