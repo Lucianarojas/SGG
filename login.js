@@ -8,23 +8,23 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem('usuarios_sgg', JSON.stringify(defaultUsers));
     }
 
-// --- Persistencia de tema ---
-const htmlElement = document.documentElement;
-const themeToggle = document.getElementById("themeToggle");
-const savedTheme = localStorage.getItem("sgg_theme") || "light";
-htmlElement.setAttribute("data-theme", savedTheme);
-document.body.classList.add(savedTheme === "dark" ? "dark-mode" : "light-mode");
+    // --- Persistencia de tema ---
+    const htmlElement = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("sgg_theme") || "light";
+    htmlElement.setAttribute("data-theme", savedTheme);
+    document.body.classList.add(savedTheme === "dark" ? "dark-mode" : "light-mode");
 
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    const current = htmlElement.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    htmlElement.setAttribute("data-theme", next);
-    document.body.classList.toggle("dark-mode", next === "dark");
-    document.body.classList.toggle("light-mode", next === "light");
-    localStorage.setItem("sgg_theme", next);
-  });
-}
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            const current = htmlElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            htmlElement.setAttribute("data-theme", next);
+            document.body.classList.toggle("dark-mode", next === "dark");
+            document.body.classList.toggle("light-mode", next === "light");
+            localStorage.setItem("sgg_theme", next);
+        });
+    }
 
     // Ver/Ocultar contraseña
     document.querySelectorAll(".field__eye").forEach(btn => {
@@ -50,7 +50,7 @@ if (themeToggle) {
     }
 
     if (formLogin) {
-        formLogin.addEventListener("submit", (e) => {
+        formLogin.addEventListener("submit", async (e) => {
             e.preventDefault();
             const email = document.getElementById("loginEmail").value.trim().toLowerCase();
             const password = document.getElementById("loginPass").value;
@@ -77,9 +77,16 @@ if (themeToggle) {
             // Éxito en login
             intentosFallidos = 0;
             globalMsg.style.display = "none";
+            btnLogin.disabled = true;
+            btnLogin.textContent = "Sincronizando...";
 
             // Guardar sesión del usuario actual
             localStorage.setItem("usuarioActual", JSON.stringify(user));
+
+            // Descargar respaldo SQLite desde Supabase antes de abrir el dashboard
+            if (typeof descargarBaseDesdeNube === "function") {
+                await descargarBaseDesdeNube(email);
+            }
 
             // Redirigir al dashboard
             window.location.href = "dashboard.html";
