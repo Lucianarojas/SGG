@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 2. Inicializar SQLite + OPFS antes de tocar la UI
   await initDatabase();
 
+  // Configurar límite de fecha máxima (hoy) en inputs de fecha
+  configurarLimiteFechas();
+
   // 3. Referencias DOM
   const form = document.getElementById("formGasto");
   const tablaBody = document.querySelector("#tablaGastos tbody");
@@ -83,6 +86,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     const monto = parseFloat(document.getElementById("gastoMonto").value);
     const fecha = document.getElementById("gastoFecha").value;
+    if (!esFechaValidaNoFutura(fecha)) {
+      alert("No se pueden registrar gastos con fechas futuras.");
+      return;
+    }
     const categoria = document.getElementById("gastoCategoria").value;
     const descripcion = document.getElementById("gastoDescripcion").value.trim();
     const tipoMovimiento = document.getElementById("tipoMovimiento").value;
@@ -98,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-   const btnSubmit = form.querySelector('button[type="submit"]');
+    const btnSubmit = form.querySelector('button[type="submit"]');
     const inputComprobante = document.getElementById("comprobante");
     const archivo = inputComprobante.files[0];
 
@@ -127,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnSubmit.textContent = "Guardar Gasto";
 
     form.reset();
+    configurarLimiteFechas();
     actualizarTodo();
   });
 
@@ -142,8 +150,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       gastoAEliminar = id;
       modalEliminar.hidden = false;
     }
-    
-     if (btn.dataset.action === "edit" && g) {
+
+    if (btn.dataset.action === "edit" && g) {
+      configurarLimiteFechas();
       document.getElementById("editMonto").value = g.monto;
       document.getElementById("editFecha").value = g.fecha;
       document.getElementById("editCategoria").value = g.categoria;
@@ -177,12 +186,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   formEditar.addEventListener("submit", async e => {
     e.preventDefault();
     if (gastoEditando) {
+      const montoEdit = parseFloat(document.getElementById("editMonto").value);
+      const fechaEdit = document.getElementById("editFecha").value;
+      const categoriaEdit = document.getElementById("editCategoria").value;
+      const descripcionEdit = document.getElementById("editDescripcion").value.trim();
+
+      if (!esFechaValidaNoFutura(fechaEdit)) {
+        alert("No se puede asignar una fecha futura al gasto.");
+        return;
+      }
+      if (!montoEdit || montoEdit <= 0) {
+        alert("El monto debe ser mayor a 0.");
+        return;
+      }
+      if (!categoriaEdit || !descripcionEdit) {
+        alert("Todos los campos son obligatorios.");
+        return;
+      }
+
       await editarMovimientoSQLite({
         id: gastoEditando,
-        monto: parseFloat(document.getElementById("editMonto").value),
-        fecha: document.getElementById("editFecha").value,
-        categoria: document.getElementById("editCategoria").value,
-        descripcion: document.getElementById("editDescripcion").value.trim()
+        monto: montoEdit,
+        fecha: fechaEdit,
+        categoria: categoriaEdit,
+        descripcion: descripcionEdit
       });
       actualizarTodo();
     }
@@ -243,7 +270,15 @@ function crearGraficoCategorias() {
     data: {
       labels: resultado.labels,
       datasets: [{
-        data: resultado.data
+        data: resultado.data,
+        backgroundColor: [
+          "#bcdd45d1",
+          "#969a1d",
+          "#7aa329",
+          "#7f8c5b",
+          "#4e9960"
+        ],
+        borderWidth: 2
       }]
     }
   });
@@ -276,4 +311,29 @@ async function subirComprobante(archivo) {
     alert("No se pudo subir el comprobante (falla de red o API). El movimiento se registrará sin imagen.");
     return null;
   }
+}
+
+// Obtiene la fecha de hoy en formato YYYY-MM-DD según la zona horaria local
+function obtenerFechaHoyLocal() {
+  const hoy = new Date();
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoy.getDate()).padStart(2, "0");
+  return `${anio}-${mes}-${dia}`;
+}
+
+// Bloquea fechas posteriores a hoy en los inputs de fecha
+function configurarLimiteFechas() {
+  const hoy = obtenerFechaHoyLocal();
+  const inputFechaNuevo = document.getElementById("gastoFecha");
+  const inputFechaEditar = document.getElementById("editFecha");
+
+  if (inputFechaNuevo) inputFechaNuevo.max = hoy;
+  if (inputFechaEditar) inputFechaEditar.max = hoy;
+}
+
+// Devuelve true si la fecha es válida (no está vacía y no es mayor a hoy)
+function esFechaValidaNoFutura(fechaStr) {
+  if (!fechaStr) return false;
+  return fechaStr <= obtenerFechaHoyLocal();
 }
