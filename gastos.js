@@ -131,6 +131,9 @@ totalBox.textContent = `$${total}`;
 
   form.reset();
   renderGastos();
+
+  crearGraficoBalance();
+  crearGraficoCategorias();
 });
 
   // 6. Botones Editar / Eliminar
@@ -170,6 +173,9 @@ totalBox.textContent = `$${total}`;
       eliminarMovimientoSQLite(gastoAEliminar);
       setGastos(gastos);
       renderGastos();
+      crearGraficoBalance();
+      crearGraficoCategorias();
+
     }
     modalEliminar.hidden = true;
     gastoAEliminar = null;
@@ -209,7 +215,11 @@ totalBox.textContent = `$${total}`;
 
   // Inicializar
   renderGastos();
+
+  crearGraficoBalance();
+  crearGraficoCategorias();
 });
+
 
 // Botón de logout en dashboard
 const btnLogout = document.getElementById("btnLogout");
@@ -220,3 +230,91 @@ if (btnLogout) {
   });
 }
  
+let graficoBalance = null;
+let graficoCategorias = null;
+
+function crearGraficoBalance() {
+
+ const gastos =
+(JSON.parse(localStorage.getItem("gastos_sgg")) || [])
+.filter(g => g.estado_activo);
+  let ingresos = 0;
+  let egresos = 0;
+
+  gastos.forEach(g => {
+
+    if (g.tipo_movimiento === "ingreso") {
+      ingresos += Number(g.monto);
+    } else {
+      egresos += Number(g.monto);
+    }
+
+  });
+
+  const ctx =
+document.getElementById("graficoBalance");
+
+if (graficoBalance) {
+    graficoBalance.destroy();
+}
+
+graficoBalance = new Chart(ctx, {
+      type: "bar",
+      data: {
+          labels: ["Ingresos", "Egresos"],
+          datasets: [{
+              label: "Total",
+              data: [ingresos, egresos]
+          }]
+      }
+  });
+}
+
+function crearGraficoCategorias() {
+
+  const gastos =
+(JSON.parse(localStorage.getItem("gastos_sgg")) || [])
+.filter(
+        g =>
+        g.estado_activo &&
+        g.tipo_movimiento === "egreso"
+      );
+
+  const categorias = {};
+  
+  gastos.forEach(g => {
+
+    if (!categorias[g.categoria]) {
+      categorias[g.categoria] = 0;
+    }
+
+    categorias[g.categoria] +=
+      Number(g.monto);
+
+  });
+
+  const ctx =
+document.getElementById("graficoCategorias");
+
+if (graficoCategorias) {
+    graficoCategorias.destroy();
+}
+
+graficoCategorias = new Chart(ctx, {
+
+      type: "doughnut",
+
+      data: {
+
+          labels:
+            Object.keys(categorias),
+
+          datasets: [{
+
+              data:
+                Object.values(categorias)
+
+          }]
+      }
+  });
+}

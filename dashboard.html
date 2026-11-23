@@ -27,6 +27,7 @@
       <button data-target="panelForm" class="btn-cta">Ingresar gasto</button>
       <button data-target="panelHistorial" class="btn-cta">Ver gastos</button>
       <button data-target="panelTotal" class="btn-cta">Consultar gastos</button>
+      <button data-target="reportes">Reportes</button>
     </nav>
 
     <!-- Panel Total -->
@@ -36,6 +37,22 @@
         <p id="totalGastado">$0</p>
       </div>
     </section>
+
+    <section id="reportes" class="panel--off">
+
+    <h2>Reportes</h2>
+
+    <div style="max-width:600px;margin:auto;">
+        <canvas id="graficoCategorias"></canvas>
+    </div>
+
+    <br>
+
+    <div style="max-width:600px;margin:auto;">
+        <canvas id="graficoBalance"></canvas>
+    </div>
+
+</section>
 
     <!-- Formulario Nuevo Gasto -->
     <section id="panelForm"> 
@@ -141,6 +158,8 @@
 </button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="opfs.js"></script>
 <script src="database.js"></script>
 <script src="gastos.js"></script>
